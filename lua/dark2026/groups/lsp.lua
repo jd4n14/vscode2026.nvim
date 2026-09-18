@@ -1,0 +1,67 @@
+-- Semantic tokens follow VS Code's default scope probes against the merged 2026 tokenColors.
+-- See docs/MAPPING.md.
+
+local function get(c)
+  local s = c.syn
+  return {
+    ['@lsp.type.class'] = { fg = s.type },
+    ['@lsp.type.struct'] = { fg = s.type },
+    ['@lsp.type.enum'] = { fg = s.type },
+    ['@lsp.type.enumMember'] = { fg = s.constant },
+    ['@lsp.type.interface'] = { fg = s.type },
+    ['@lsp.type.type'] = { fg = s.type },
+    ['@lsp.type.typeParameter'] = { fg = s.type },
+    ['@lsp.type.parameter'] = { fg = s.parameter },
+    ['@lsp.type.variable'] = { fg = s.variable },
+    ['@lsp.type.property'] = { fg = s.property },
+    ['@lsp.type.function'] = { fg = s.func },
+    ['@lsp.type.method'] = { fg = s.func },
+    ['@lsp.type.member'] = { fg = s.func },
+    ['@lsp.type.macro'] = { fg = s.macro },
+    ['@lsp.type.namespace'] = { fg = s.module },
+    ['@lsp.type.decorator'] = { fg = s.decorator },
+    ['@lsp.type.event'] = { fg = s.constant },
+    ['@lsp.type.operator'] = { fg = s.operator },
+    ['@lsp.type.keyword'] = { fg = s.keyword },
+    ['@lsp.type.comment'] = { fg = s.comment },
+    ['@lsp.type.string'] = { fg = s.string },
+    ['@lsp.type.number'] = { fg = s.number },
+    ['@lsp.type.regexp'] = { fg = s.regexp },
+    ['@lsp.type.boolean'] = { fg = s.boolean },
+    ['@lsp.type.modifier'] = { fg = s.keyword_modifier },
+    ['@lsp.type.label'] = { fg = s.keyword },
+
+    ['@lsp.typemod.variable.readonly'] = { fg = s.constant },
+    ['@lsp.typemod.variable.defaultLibrary'] = { fg = s.constant },
+    ['@lsp.typemod.variable.global'] = { fg = s.constant },
+    ['@lsp.typemod.variable.static'] = { fg = s.constant },
+    ['@lsp.typemod.property.readonly'] = { fg = s.constant },
+    ['@lsp.typemod.property.defaultLibrary'] = { fg = s.constant },
+    ['@lsp.typemod.function.defaultLibrary'] = { fg = s.func_builtin },
+    ['@lsp.typemod.method.defaultLibrary'] = { fg = s.func_builtin },
+    ['@lsp.typemod.type.defaultLibrary'] = { fg = s.type },
+    ['@lsp.typemod.class.defaultLibrary'] = { fg = s.type },
+    ['@lsp.typemod.interface.defaultLibrary'] = { fg = s.type },
+    ['@lsp.mod.deprecated'] = { fg = s.deprecated, strikethrough = true, italic = true },
+    ['@lsp.mod.declaration'] = {},
+    ['@lsp.mod.readonly'] = {},
+    ['@lsp.mod.static'] = {},
+    ['@lsp.mod.async'] = {},
+    ['@lsp.mod.modification'] = {},
+    ['@lsp.mod.documentation'] = {},
+    ['@lsp.mod.defaultLibrary'] = {},
+    ['@lsp.mod.abstract'] = { italic = true },
+
+    LspReferenceText = { bg = c.ui.selection_word },
+    LspReferenceRead = { bg = c.ui.selection_word },
+    LspReferenceWrite = { bg = c.ui.find_other },
+    LspReferenceTarget = { bg = c.ui.hover },
+    LspInlayHint = { fg = c.ui.fg_dim, bg = c.ui.bg_hover },
+    LspCodeLens = { fg = c.ui.fg_dim, italic = true },
+    LspCodeLensSeparator = { fg = c.ui.fg_muted },
+    LspSignatureActiveParameter = { bg = c.ui.selection_word, bold = true },
+    LspInfoBorder = { fg = c.ui.border_strong, bg = c.ui.bg_menu },
+  }
+end
+
+return { get = get }
