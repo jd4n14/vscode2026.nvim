@@ -1,6 +1,19 @@
-# dark2026.nvim
+# vscode2026.nvim
 
-A Neovim port of the official VS Code **Dark 2026** and **Light 2026** themes.
+Neovim port of VS Code's **Dark 2026** and **Light 2026** themes.
+
+```vim
+:colorscheme dark2026
+:colorscheme light2026
+```
+
+Those colorscheme names match the VS Code theme names and **do not change**.
+The Lua module is `vscode2026`:
+
+```lua
+require('vscode2026').setup {}
+vim.cmd.colorscheme 'dark2026'
+```
 
 Colors are resolved from `microsoft/vscode` with full JSON inheritance:
 
@@ -9,12 +22,9 @@ Colors are resolved from `microsoft/vscode` with full JSON inheritance:
 2026-light.json → light_modern.json → light_plus.json → light_vs.json
 ```
 
-This is not a GitHub-Dark recolor with a light variant. UI colors come from the 2026 theme files. Syntax and semantic tokens keep the 2026 GitHub-style rules **and** the more specific Dark+/Light+ / VS rules that still win in VS Code.
+This is not a GitHub-Dark recolor with a light variant. UI colors come from the 2026 theme files. Syntax keeps the 2026 GitHub-style rules **and** the more specific Dark+/Light+ / VS rules that still win in VS Code.
 
-```vim
-:colorscheme dark2026
-:colorscheme light2026
-```
+Dark and Light share one semantic vocabulary (`keyword_control`, `string`, `number`, `type`, …). Only the palette chooses a HEX per style, so switching themes feels like changing the lighting, not installing a different colorscheme.
 
 ## Install
 
@@ -22,7 +32,7 @@ This is not a GitHub-Dark recolor with a light variant. UI colors come from the 
 
 ```lua
 {
-  'jd4n14/dark2026.nvim',
+  'jd4n14/vscode2026.nvim',
   lazy = false,
   priority = 1000,
   config = function()
@@ -35,7 +45,7 @@ This is not a GitHub-Dark recolor with a light variant. UI colors come from the 
 Optional setup (all keys are optional):
 
 ```lua
-require('dark2026').setup {
+require('vscode2026').setup {
   transparent = false,
   italic_comments = false, -- VS Code 2026 comments are not italic
   plugins = true,
@@ -43,10 +53,12 @@ require('dark2026').setup {
 vim.cmd.colorscheme 'dark2026'
 ```
 
+`require('dark2026')` still works as a compatibility shim.
+
 ### packer.nvim
 
 ```lua
-use 'jd4n14/dark2026.nvim'
+use 'jd4n14/vscode2026.nvim'
 ```
 
 Then `:colorscheme dark2026` or `:colorscheme light2026`.
@@ -81,29 +93,34 @@ require('lualine').setup {
 
 2026's `tokenColors` are GitHub-style, but they **include** Dark+ / Dark VS. More specific selectors from the parent still apply.
 
-| Role | Dark | Light | Source |
+Dark and Light use the same roles. HEX values differ so contrast stays correct:
+
+| Role | Dark | Light | Family |
 |---|---|---|---|
-| editor bg | `#121314` | `#FFFFFF` | 2026 `editor.background` |
-| chrome | `#191A1B` | `#FAFAFD` | 2026 sidebar/status/panel |
-| accent | `#3994BC` | `#0069CC` | 2026 |
-| comment | `#8b949e` | `#6e7781` | 2026 |
-| string | `#a5d6ff` | `#0a3069` | 2026 |
-| keyword (`const`, `fn`, `class`) | `#ff7b72` | `#cf222e` | 2026 `storage` / `keyword` |
-| control flow (`if`, `return`, `use`) | `#C586C0` | `#AF00DB` | Dark+/Light+ `keyword.control` |
-| function | `#d2a8ff` | `#8250df` | 2026 `entity.name.function` |
-| builtin function | `#DCDCAA` | `#795E26` | Dark+/Light+ `support.function` |
-| type | `#4EC9B0` | `#267f99` | Dark+/Light+ `entity.name.type` |
-| number | `#b5cea8` | `#098658` | Dark VS `constant.numeric` |
-| parameter / decorator | `#ffa657` | `#953800` | 2026 `variable` / `entity.name` |
-| tag | `#7ee787` | `#116329` | 2026 |
+| editor bg | `#121314` | `#FFFFFF` | canvas |
+| chrome | `#191A1B` | `#FAFAFD` | chrome |
+| accent | `#3994BC` | `#0069CC` | accent |
+| comment | `#8b949e` | `#6e7781` | gray |
+| string | `#a5d6ff` | `#0a3069` | blue |
+| keyword (`const`, `fn`, `class`) | `#ff7b72` | `#cf222e` | red |
+| control flow (`if`, `return`, `SELECT`) | `#C586C0` | `#AF00DB` | purple |
+| function | `#d2a8ff` | `#8250df` | violet |
+| builtin function | `#DCDCAA` | `#795E26` | gold |
+| type / module | `#4EC9B0` | `#267f99` | cyan |
+| number | `#b5cea8` | `#098658` | green |
+| identifier | `#c9d1d9` | `#1f2328` | foreground |
+| parameter / decorator | `#ffa657` | `#953800` | orange |
+| tag | `#7ee787` | `#116329` | green |
+
+Tree-sitter identifiers stay foreground even when VS Code's TextMate grammar would paint a word like `data` as a keyword. SQL is the clearest example: `SELECT` / `FROM` / `WHERE` are `keyword_control`; table names are `type` when captured as types; columns stay identifiers.
 
 See [docs/MAPPING.md](docs/MAPPING.md) and [docs/FIDELITY.md](docs/FIDELITY.md).
 
 ## Layout
 
 ```
-lua/dark2026/
-  palette.lua          -- dark + light palettes
+lua/vscode2026/
+  palette.lua          -- semantic roles with dark/light HEX pairs
   groups/editor.lua
   groups/syntax.lua
   groups/treesitter.lua
@@ -113,9 +130,21 @@ lua/dark2026/
   groups/terminal.lua
   groups/languages.lua
   plugins.lua
-colors/dark2026.lua
-colors/light2026.lua
+lua/dark2026/          -- require('dark2026') compatibility shims
+colors/dark2026.lua    -- :colorscheme dark2026
+colors/light2026.lua   -- :colorscheme light2026
+vendor/vscode/         -- official JSON snapshots
 ```
+
+## Verify
+
+From the repo root:
+
+```sh
+nvim --headless -u NONE -c "set rtp+=." -c "luafile scripts/verify.lua"
+```
+
+Checks that Dark/Light share the same semantic roles, that mapping modules do not hardcode HEX, that both colorschemes load, and that SQL keeps control keywords vs identifiers.
 
 ## License
 

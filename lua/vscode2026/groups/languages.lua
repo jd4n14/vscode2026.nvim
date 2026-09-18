@@ -1,5 +1,5 @@
--- Language-specific groups. Colors still come from the shared palettes;
--- these only apply more specific TextMate/Treesitter mappings.
+-- Language-specific groups. HEX lives in the palette; these only pick roles.
+-- Dark/Light is decided by palette.get(style), never here.
 
 local function get(c)
   local s = c.syn
@@ -152,6 +152,9 @@ local function get(c)
     ['@lsp.typemod.variable.global.lua'] = { fg = s.constant },
     ['@lsp.typemod.variable.defaultLibrary.lua'] = { fg = s.constant },
 
+    -- SQL: SELECT/FROM/WHERE are keyword_control (purple). Identifiers stay
+    -- syn.variable (foreground) — Tree-sitter parses `data` as a field name,
+    -- not a keyword. Do not copy VS Code TextMate's keyword-as-identifier.
     sqlKeyword = { fg = s.keyword_control },
     sqlFunction = { fg = s.func_builtin },
     sqlType = { fg = s.type },
@@ -161,6 +164,8 @@ local function get(c)
     ['@type.sql'] = { fg = s.type },
     ['@function.sql'] = { fg = s.func_builtin },
     ['@attribute.sql'] = { fg = s.constant },
+    ['@variable.sql'] = { fg = s.variable },
+    ['@variable.member.sql'] = { fg = s.property },
   }
 end
 

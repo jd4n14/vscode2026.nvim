@@ -2,6 +2,14 @@
 
 The original `colors/dark2026.lua` was a hand-built Dark-only colorscheme. UI chrome was mostly taken from 2026 Dark. Syntax mixed GitHub Dark tokens with a few custom choices and did not apply VS Code include-chain specificity.
 
+This repo now ports **both** official themes (`:colorscheme dark2026` and `:colorscheme light2026`) under the `vscode2026` module. HEX values are declared as dark/light pairs on a shared semantic layer in `lua/vscode2026/palette.lua`. Official JSON snapshots live in `vendor/vscode` and remain the source of truth.
+
+## Semantic Dark/Light layer
+
+Dark 2026 and Light 2026 share the same roles (`keyword_control`, `string`, `number`, `type`, `func`, `variable`, …). HEX is not shared: each style uses the official color that has enough contrast on its background.
+
+Treesitter / LSP / language maps never branch on `style`. If a role is purple for Dark, it is purple for Light. Roles marked `family = 'inherited'` are leftover Dark+/Light VS rules that 2026 did not override; those can diverge chromatically because they match VS Code (HTML attributes cyan in Dark, red in Light).
+
 ## Already faithful in the original (kept)
 
 - Editor `#121314`, chrome `#191A1B`, menu `#202122`, accent `#3994BC`
@@ -33,15 +41,23 @@ The original `colors/dark2026.lua` was a hand-built Dark-only colorscheme. UI ch
 
 ## Inheritance quirks that look “wrong” but match VS Code
 
-These are leftover Dark+/VS rules that 2026 did not override with an equally specific selector:
+These are leftover Dark+/VS rules that 2026 did not override with an equally specific selector. They are stored as `family = 'inherited'` so Dark/Light may differ chromatically:
 
 - `storage.modifier` (`static`, `public`, …) stays Dark+ blue (`#569cd6` / `#0000ff`)
 - CSS class selectors stay Dark+ gold / maroon
 - HTML attributes stay Dark+ `#9cdcfe` (dark) / `#e50000` (light)
 - `new` / `delete` / word-like operators stay Dark+ blue/purple, not 2026 red
 - Light 2026 HTML attributes are red because Light VS still owns `entity.other.attribute-name`
+- Tag delimiters stay `#808080` (dark) / `#800000` (light)
+- String escapes stay gold (dark) / red (light)
 
-If Microsoft later adds matching 2026 rules, update `lua/dark2026/palette.lua` from the include chain rather than re-tinting by eye.
+If Microsoft later adds matching 2026 rules, update `lua/vscode2026/palette.lua` from the include chain rather than re-tinting by eye.
+
+## Where this port intentionally differs from TextMate
+
+Tree-sitter's grammar is used instead of VS Code's TextMate keyword lists when they disagree on *what a token is*. Colors still come from the same roles.
+
+SQL is the main case: `SELECT` / `FROM` / `WHERE` are `keyword_control`. A field named `data` is an identifier (`syn.variable`), not a red/purple keyword, because Tree-sitter parses it as `(field name: (identifier))`.
 
 ## Terminal colors
 

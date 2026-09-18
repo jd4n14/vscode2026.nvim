@@ -1,1 +1,1 @@
-require('dark2026').load 'light'
+require('vscode2026').load 'light'

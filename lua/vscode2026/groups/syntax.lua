@@ -1,3 +1,4 @@
+-- Vim syntax groups. Colors come from palette roles; no HEX or style branching.
 local function get(c, cfg)
   local s = c.syn
   return {

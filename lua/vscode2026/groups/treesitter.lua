@@ -1,4 +1,5 @@
 -- Treesitter captures mapped from VS Code TextMate scopes + default semantic probes.
+-- Colors come from palette roles (`c.syn.*`); this file must not pick HEX or style.
 -- See docs/MAPPING.md.
 
 local function get(c, cfg)

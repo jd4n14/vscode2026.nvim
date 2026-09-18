@@ -1,4 +1,4 @@
-local p = require('dark2026.palette').get 'light'
+local p = require('vscode2026.palette').get 'light'
 local ui, g, s = p.ui, p.git, p.syn
 
 return {
